@@ -1,0 +1,8 @@
+{
+    "graphs":{
+        "rag_agent": {
+            "path": "./practice_agents/ragagent4.ts:graph"
+        }
+    },
+    "env": ".env"
+}
