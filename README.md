@@ -38,8 +38,8 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/langchainframework.git
-   cd langchainframework
+   git clone git@github.com:vinayath-tech/rag-agent-langchain.git
+   cd rag-agent-langchain
    ```
 
 2. Install dependencies:

@@ -9,9 +9,9 @@ import { z } from "zod";
 export async function initializeAgent() {
 
     const pdfPaths = [
-    "C:/Users/gokul/personal-projects/langchainFramework/rag/docs/nke-10k-2023.pdf",
-    "C:/Users/gokul/personal-projects/langchainFramework/rag/docs/Nike-Inc-2025_10K.pdf",
-    "C:/Users/gokul/personal-projects/langchainFramework/rag/docs/nike-growth-story.pdf"
+    "C:/Users/gokul/personal-projects/rag-agent-langchain/rag/docs/nke-10k-2023.pdf",
+    "C:/Users/gokul/personal-projects/rag-agent-langchain/rag/docs/Nike-Inc-2025_10K.pdf",
+    "C:/Users/gokul/personal-projects/rag-agent-langchain/rag/docs/nike-growth-story.pdf"
     ]
 
     const allDocs = [];
