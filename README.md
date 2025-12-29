@@ -20,11 +20,12 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 ├── package.json                # Project dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
 ├── practice_agents/            # Practice agent implementations
-├── rag/                        # RAG agent and server implementation
-│   ├── docs/                   # PDF documents for retrieval
-│   ├── public/                 # Frontend files (HTML, CSS, JS)
-│   ├── ragagent.ts             # RAG agent implementation
-│   ├── server.ts               # Express server
+├── rag/   
+│   ├── nike-question-agent/        # RAG agent and server implementation
+│       ├── docs/                   # PDF documents for retrieval
+│       ├── public/                 # Frontend files (HTML, CSS, JS)
+│       ├── ragagent.ts             # RAG agent implementation
+│       ├── server.ts               # Express server
 └── README.md                   # Project documentation
 ```
 
@@ -60,7 +61,7 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 
 1. Start the server:
    ```bash
-   npx tsx rag/server.ts
+   npx tsx rag/nike-question-agent/server.ts
    ```
 
 2. Open your browser and navigate to:
@@ -81,12 +82,12 @@ npx tsx practice_agents/agent1.ts
 
 ### RAG Agent
 
-The RAG (Retrieval-Augmented Generation) agent is implemented in `rag/ragagent.ts`. It processes PDF documents, splits them into chunks, and uses embeddings for similarity searches. The agent is exposed via an Express server in `rag/server.ts`.
+The RAG (Retrieval-Augmented Generation) agent is implemented in `rag/nike-question-agent/ragagent.ts`. It processes PDF documents, splits them into chunks, and uses embeddings for similarity searches. The agent is exposed via an Express server in `rag/nike-question-agent/server.ts`.
 
 
 ### Frontend
 
-The frontend is located in the `rag/public` directory:
+The frontend is located in the `rag/nike-question-agent/public` directory:
 - `index.html`: Chat interface.
 - `style.css`: Styling for the chat interface.
 - `script.js`: Handles user interactions and communicates with the backend.
