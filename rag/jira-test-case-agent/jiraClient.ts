@@ -12,7 +12,7 @@ const jira = axios.create({
     }
 });
 
-const issueKey = "DEV-1";
+// const issueKey = "DEV-1";
 
 async function extractTextFromContent(content: any): Promise<string> {
     if(!content || !Array.isArray(content)) return "";
@@ -29,12 +29,12 @@ async function extractTextFromContent(content: any): Promise<string> {
     return textArray.join("\n");
 }
 
-export async function getJiraStory() {
+export async function getJiraStory(issueKey: string) {
 
-    console.log("getJiraStory called with issueKey:DEV-1");
+    console.log(`getJiraStory called with issueKey:${issueKey}`);
 
     try {
-        const response =  await jira.get(`/rest/api/3/issue/DEV-1`);
+        const response =  await jira.get(`/rest/api/3/issue/${issueKey}`);
         const fields = response.data.fields;
 
         const descriptionText = fields.description 
@@ -45,10 +45,10 @@ export async function getJiraStory() {
                 ? await extractTextFromContent(fields.customfield_10072?.content)
                 : "";
 
-        console.log("Jira Issue Description:", descriptionText);
-        console.log("Jira Issue Acceptance Criteria:", acceptanceCriteriaText);
-        console.log("Jira Issue type:", fields.issuetype.name);
-        console.log("Jira Issue status:", fields.status?.name);
+        // console.log("Jira Issue Description:", descriptionText);
+        // console.log("Jira Issue Acceptance Criteria:", acceptanceCriteriaText);
+        // console.log("Jira Issue type:", fields.issuetype.name);
+        // console.log("Jira Issue status:", fields.status?.name);
         return {
             key: 'DEV-1',
             summary: fields.summary,
@@ -63,7 +63,7 @@ export async function getJiraStory() {
         throw error;
     }
 }
-    
-getJiraStory();
+
+// getJiraStory("DEV-1");
 
 
