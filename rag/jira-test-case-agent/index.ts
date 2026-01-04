@@ -3,8 +3,8 @@ import { normalizeStory } from "./storyNormalizer";
 import { ingestStory } from "./ingestStory";
 import { generateTestCasesFromStory } from "./storyToTestAgent"; 
 
-async function runJiraTestCaseAgent() {
-  const story = await getJiraStory("DEV-1");
+export async function runJiraTestCaseAgent(issueKey: string) {
+  const story = await getJiraStory(issueKey);
 
   const normalized = normalizeStory(story);
 
@@ -14,5 +14,3 @@ async function runJiraTestCaseAgent() {
 
   console.log(result);
 }
-
-runJiraTestCaseAgent();

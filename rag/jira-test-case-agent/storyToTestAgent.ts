@@ -43,6 +43,7 @@ export async function generateTestCasesFromStory(vectorStore: any) {
         - Generate happy path test cases
         - Generate negative test cases
         - Generate boundary value test cases
+        - Generate above test cases in a list format specifying title, description, precondition, steps & expected results
         - Generate BDD Gherkin scenarios
         - Identify missing or ambiguous acceptance criteria
 

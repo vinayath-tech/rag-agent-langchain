@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Agent Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RAG Agent Interface</h1>
+        
+        <div class="agent-selector">
+            <label for="agent-select">Choose an Agent:</label>
+            <select id="agent-select">
+                <option value="nike-question-agent">Nike Question Agent</option>
+                <option value="jira-test-case-agent">JIRA Test Case Agent</option>
+            </select>
+        </div>
+
+        <div class="result-box">
+            <h3>Latest Response</h3>
+            <div id="result-content">
+                <p class="placeholder">Response will appear here...</p>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div id="chat-messages"></div>
+            
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Enter your question or story number...">
+                <button id="submit-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

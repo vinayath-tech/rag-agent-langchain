@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-jira-agent": "tsx ./rag/jira-test-case-agent/src/app.ts",
+    "start-nike-agent": "tsx ./rag/nike-question-agent/src/app.ts",
+    "start-ui": "serve ./rag/shared-ui/public"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
     "@langchain/textsplitters": "^1.0.1",
     "@types/node": "^24.10.0",
     "axios": "^1.13.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
     "langchain": "^1.1.5",
@@ -32,6 +35,8 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "serve": "^14.2.5"
   }
 }
