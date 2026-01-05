@@ -12,5 +12,5 @@ export async function runJiraTestCaseAgent(issueKey: string) {
 
   const result = await generateTestCasesFromStory(vectorStore);
 
-  console.log(result);
+  return result;
 }
