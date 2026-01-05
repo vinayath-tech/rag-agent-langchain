@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { runJiraTestCaseAgent } from './../index';
+import { runJiraTestCaseAgent } from '../testCaseAgent';
 
 const app = express();
 app.use(cors());

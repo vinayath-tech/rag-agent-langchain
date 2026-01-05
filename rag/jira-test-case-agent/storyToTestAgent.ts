@@ -1,84 +1,71 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { tool } from "langchain";
+import { z } from "zod";
 import "dotenv/config";
 
 export async function generateTestCasesFromStory(vectorStore: any) {
 
-    // const llm = new ChatOpenAI({
-    //     model: "gpt-4o",
-    //     temperature: 0.2,
-    // });
-
-    // const retriever = vectorStore.asRetriever({
-    //     k:3
-    // });
-
-    // const qaChain = RetrievalQAChain.fromLLM(llm, retriever, {
-    //     returnSourceDocuments: true,
-    // });
-
-    // const result = await qaChain.call({
-    //     query: `
-    //         You are an Senior SDET    
-    //         Generate detailed test cases for the following JIRA story.
-    //         Generate:
-    //             1. Happy path test cases
-    //             2. Negative test cases
-    //             3. Boundary cases
-    //             4. BDD Gherkin scenarios
-    //             5. Missing acceptance criteria questions
-
-    //             Follow risk-based testing.
-    //         `
-    // });
-
-    // return result;
-
-    const TEST_CASE_PROMPT = PromptTemplate.fromTemplate(`
-        You are a Senior SDET with strong domain expertise.
-
-        Using ONLY the context below:
-        - Generate happy path test cases
-        - Generate negative test cases
-        - Generate boundary value test cases
-        - Generate above test cases in a list format specifying title, description, precondition, steps & expected results
-        - Generate BDD Gherkin scenarios
-        - Identify missing or ambiguous acceptance criteria
-
-        Rules:
-        - Do NOT invent business rules
-        - Clearly separate sections
-        - Ask clarification questions if needed
-
-        CONTEXT:
-        {context}
-    `);
-
+  
     const llm = new ChatOpenAI({
         model: "gpt-4o",
         temperature: 0.2,
     });
 
-    const retriever = vectorStore.asRetriever({
-        k: 3
+    //Create a tool to retrieve context from the vector store
+    const retrieveStoryTool = tool(
+        async ({ query }) => {
+            const retriever = vectorStore.asRetriever();
+            const docs = await retriever.invoke(query);
+            return docs.map((d: any) => d.pageContent).join("\n\n");
+        },
+        {
+            name:"retrieve_jira_story",
+            description: "Retrieve JIRA story details & acceptance criteria to generate test cases",
+            schema: z.object({
+                query: z.string().describe("JIRA ticket number")
+            })
+        }
+    );
+
+
+    const agent = createReactAgent({
+        llm,
+        tools: [retrieveStoryTool],
     });
 
-  const sequence = RunnableSequence.from([
-    {
-      context: async () => {
-        const docs = await retriever.invoke(
-          "jira story acceptance criteria"
-        );
-        return docs.map((d: any) => d.pageContent).join("\n\n");
-      },
-    },
-    TEST_CASE_PROMPT,
-    llm,
-    new StringOutputParser(),
-  ]);
+    const result = await agent.invoke({
+        messages: [ 
+            {
+                role: "system",
+                content: `You are a Senior SDET with strong domain expertise.
+                
+                Your task is to generate comprehensive test cases. Follow these steps:
+                1. Use the retrieve_jira_story tool to get the story details
+                2. Analyze the acceptance criteria carefully
+                3. Generate test cases in the following categories:
+                   - Happy path test cases
+                   - Negative test cases
+                   - Boundary value test cases
+                4. Format each test case with: title, description, precondition, steps, expected results
+                5. Generate BDD Gherkin scenarios
+                6. Identify missing or ambiguous acceptance criteria
+                
+                Rules:
+                - Do NOT invent business rules
+                - Clearly separate sections
+                - Ask clarification questions if needed
+                - Base everything on the retrieved context`
+            },
+            {
+                role: "user",
+                content: `Generate detailed test cases for the JIRA story with ticket number: {issueKey}`
+            }
+        ]
+    });
 
-   return await sequence.invoke("Generate detailed test cases for the given JIRA story.");
-
+    const messages = result.messages;
+    const finalResponse = messages[messages.length - 1].content;
+    return finalResponse;
 }
+
