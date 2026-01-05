@@ -9,6 +9,7 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 - **Dynamic Middleware**: Use middleware for dynamic model selection, summarization, and PII masking.
 - **Web Interface**: Interact with the agents through a simple chat interface built with HTML, CSS, and JavaScript.
 - **Agent Variants**: Multiple agent implementations for different use cases, including RAG (Retrieval-Augmented Generation) agents.
+- **JIRA Integration**: JIRA test agent for interacting with JIRA APIs to create Positive / Negative test cases & to identify gaps in requirements
 
 ## Project Structure
 
@@ -20,12 +21,15 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 ├── package.json                # Project dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
 ├── practice_agents/            # Practice agent implementations
+├── public/                     # Frontend files (HTML, CSS, JS) - Shared UI
 ├── rag/   
-│   ├── nike-question-agent/        # RAG agent and server implementation
-│       ├── docs/                   # PDF documents for retrieval
-│       ├── public/                 # Frontend files (HTML, CSS, JS)
-│       ├── ragagent.ts             # RAG agent implementation
-│       ├── server.ts               # Express server
+│   ├── nike-question-agent/    # RAG agent implementation
+│       ├── docs/               # PDF documents for retrieval
+│       ├── ragagent.ts         # RAG agent implementation
+│       ├── server.ts           # Express server
+├── jira-test-agent/            # JIRA integration agent
+│   ├── jira-agent.ts           # JIRA agent implementation
+│   ├── server.ts               # Express server for JIRA agent
 └── README.md                   # Project documentation
 ```
 
@@ -34,6 +38,7 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 - Node.js (v16+)
 - npm or yarn
 - OpenAI API key (set in `.env` file)
+- JIRA API credentials (for JIRA agent)
 
 ## Installation
 
@@ -54,22 +59,61 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
      ```
      OPENAI_API_KEY=your-openai-api-key
      ```
+   - For JIRA agent, add JIRA credentials:
+     ```
+     JIRA_HOST=your-jira-instance.atlassian.net
+     JIRA_EMAIL=your-email@example.com
+     JIRA_API_TOKEN=your-jira-api-token
+     ```
 
 ## Usage
 
 ### Running the RAG Agent Server
 
-1. Start the server:
+1. Start the RAG agent backend server:
+   ```bash
+   npm run start-nike-agent
+   ```
+   Or manually:
    ```bash
    npx tsx rag/nike-question-agent/server.ts
    ```
 
-2. Open your browser and navigate to:
-   ```
-   http://localhost:3000
+2. Start the frontend UI (in a separate terminal):
+   ```bash
+   npm run start:ui
    ```
 
-3. Interact with the agent by typing questions in the chat interface.
+3. Open your browser and navigate to:
+   ```
+   http://localhost:8080
+   ```
+
+4. Interact with the agent by typing questions in the chat interface.
+
+### Running the JIRA Test Agent
+
+1. Start the JIRA agent backend server:
+   ```bash
+   npm run start-jira-agent
+   ```
+   Or manually:
+   ```bash
+   npx tsx jira-test-agent/server.ts
+   ```
+
+2. Start the frontend UI (in a separate terminal):
+   ```bash
+   npm run start:ui
+   ```
+
+3. Open your browser and navigate to:
+   ```
+   http://localhost:8080
+   ```
+
+4. Interact with the JIRA agent to:
+   - Type the Ticket number in chat & get your test cases generated for the User story
 
 ### Running Practice Agents
 
@@ -82,15 +126,29 @@ npx tsx practice_agents/agent1.ts
 
 ### RAG Agent
 
-The RAG (Retrieval-Augmented Generation) agent is implemented in `rag/nike-question-agent/ragagent.ts`. It processes PDF documents, splits them into chunks, and uses embeddings for similarity searches. The agent is exposed via an Express server in `rag/nike-question-agent/server.ts`.
+The Nike RAG (Retrieval-Augmented Generation) agent is implemented in `rag/nike-question-agent/ragagent.ts`. It processes PDF documents, splits them into chunks, and uses embeddings for similarity searches. The agent is exposed via an Express server in `rag/nike-question-agent/server.ts`.
 
+### JIRA Test Agent
+
+The JIRA RAG agent is implemented in `jira-test-agent/jira-agent.ts`. It provides tools to interact with JIRA APIs, including:
+- Type the Ticket number in chat & get your test cases generated for the User story
+
+The agent is exposed via an Express server in `jira-test-agent/server.ts`.
 
 ### Frontend
 
-The frontend is located in the `rag/nike-question-agent/public` directory:
+The frontend is located in the `public` directory (shared across agents):
 - `index.html`: Chat interface.
 - `style.css`: Styling for the chat interface.
 - `script.js`: Handles user interactions and communicates with the backend.
+
+The frontend automatically connects to the backend server running on port 3000.
+
+## Available Scripts
+
+- `npm run start:rag` - Start the RAG agent backend server
+- `npm run start:jira` - Start the JIRA agent backend server
+- `npm run start:ui` - Start the frontend UI server (serves public folder on port 8080)
 
 ## Configuration
 
