@@ -11,34 +11,13 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 - **Agent Variants**: Multiple agent implementations for different use cases, including RAG (Retrieval-Augmented Generation) agents.
 - **JIRA Integration**: JIRA test agent for interacting with JIRA APIs to create Positive / Negative test cases & to identify gaps in requirements
 
-## Project Structure
-
-```
-.
-├── .env                        # Environment variables
-├── .gitignore                  # Git ignore file
-├── langgraph.json              # LangGraph configuration
-├── package.json                # Project dependencies and scripts
-├── tsconfig.json               # TypeScript configuration
-├── practice_agents/            # Practice agent implementations
-├── public/                     # Frontend files (HTML, CSS, JS) - Shared UI
-├── rag/   
-│   ├── nike-question-agent/    # RAG agent implementation
-│       ├── docs/               # PDF documents for retrieval
-│       ├── ragagent.ts         # RAG agent implementation
-│       ├── server.ts           # Express server
-├── jira-test-agent/            # JIRA integration agent
-│   ├── jira-agent.ts           # JIRA agent implementation
-│   ├── server.ts               # Express server for JIRA agent
-└── README.md                   # Project documentation
-```
-
 ## Prerequisites
 
-- Node.js (v16+)
+-Node.js (v16+)
 - npm or yarn
 - OpenAI API key (set in `.env` file)
 - JIRA API credentials (for JIRA agent)
+- Confluence API credentials (for Confluence agent)
 
 ## Installation
 
@@ -66,17 +45,20 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
      JIRA_API_TOKEN=your-jira-api-token
      ```
 
+   - For Confluence agent, add Confluence credentials:
+     ```
+     MONGODB_ATLAS_URI=mongo DB connection string
+     MONGODB_ATLAS_COLLECTION_NAME=collection-name
+     MONGODB_ATLAS_DB_NAME=database-name
+     ```
+
 ## Usage
 
-### Running the RAG Agent Server
+### Running the Nike RAG Agent Server
 
-1. Start the RAG agent backend server:
+1. Start the Nike RAG agent backend server:
    ```bash
    npm run start-nike-agent
-   ```
-   Or manually:
-   ```bash
-   npx tsx rag/nike-question-agent/server.ts
    ```
 
 2. Start the frontend UI (in a separate terminal):
@@ -97,10 +79,6 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
    ```bash
    npm run start-jira-agent
    ```
-   Or manually:
-   ```bash
-   npx tsx jira-test-agent/server.ts
-   ```
 
 2. Start the frontend UI (in a separate terminal):
    ```bash
@@ -115,6 +93,28 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 4. Interact with the JIRA agent to:
    - Type the Ticket number in chat & get your test cases generated for the User story
 
+### Running the Confluence Agent
+
+1. Start the Confluence agent backend server:
+   ```bash
+   npm run start-confluence-agent
+   ```
+
+2. Make a /POST call to below endpoint by passing `PageID` number in request payload:
+   ```
+   http://localhost:3002/confluence-user-story-agent
+   ```
+
+   Request payload format
+   ```
+   {
+      "query": "<PageId>"
+   }
+   ```
+
+3. Verify the User-story & AC returned by the Agent in API response:
+
+
 ### Running Practice Agents
 
 You can run individual practice agents to test their functionality. For example:
@@ -124,7 +124,7 @@ npx tsx practice_agents/agent1.ts
 
 ## Key Components
 
-### RAG Agent
+### Nike RAG Agent
 
 The Nike RAG (Retrieval-Augmented Generation) agent is implemented in `rag/nike-question-agent/ragagent.ts`. It processes PDF documents, splits them into chunks, and uses embeddings for similarity searches. The agent is exposed via an Express server in `rag/nike-question-agent/server.ts`.
 
@@ -134,6 +134,15 @@ The JIRA RAG agent is implemented in `jira-test-agent/jira-agent.ts`. It provide
 - Type the Ticket number in chat & get your test cases generated for the User story
 
 The agent is exposed via an Express server in `jira-test-agent/server.ts`.
+
+### Confluence Agent
+
+The Confluence agent is implemented in `confluence-agent/confluence-agent.ts`. It provides tools to interact with Confluence APIs :
+- To fetch User story from the BRD
+- To fetch Acceptance criteria from BRD
+
+The agent is exposed via an Express server in `confluence-agent/server.ts`.
+
 
 ### Frontend
 
@@ -148,6 +157,7 @@ The frontend automatically connects to the backend server running on port 3000.
 
 - `npm run start:rag` - Start the RAG agent backend server
 - `npm run start:jira` - Start the JIRA agent backend server
+- `npm run start:confluence` - Start the Confluence agent backend server
 - `npm run start:ui` - Start the frontend UI server (serves public folder on port 8080)
 
 ## Configuration
