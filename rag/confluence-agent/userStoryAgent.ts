@@ -2,17 +2,25 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { fetchConfluencePage } from "./confluenceFetchTool";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
+import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
+import { MongoClient } from "mongodb";
 import { Document } from "@langchain/core/documents";
 import "dotenv/config";
 import { createAgent, tool } from "langchain";
 import { z } from "zod";
 
-const textSplitters = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
-});
+export async function initializeUserStoryAgent(query: string) {
 
-const docText = await fetchConfluencePage("131074");
+    const textSplitters = new RecursiveCharacterTextSplitter({
+        chunkSize: 1000,
+        chunkOverlap: 200,
+    });
+
+
+const client  = new MongoClient(process.env.MONGODB_ATLAS_URI || "");
+const collection = client.db(process.env.MONGODB_ATLAS_DB_NAME || "").collection(process.env.MONGODB_ATLAS_COLLECTION_NAME || "");
+
+const docText = await fetchConfluencePage(query);
 
 //Create a document object
 const doc = new Document({
@@ -27,7 +35,14 @@ const embeddings = new OpenAIEmbeddings({
     model: "text-embedding-3-large",
 });
 
-const vectorStore = new MemoryVectorStore(embeddings);
+
+
+const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
+    collection: collection,
+    indexName: "confluence_vector_index",
+    textKey: "pageContent",
+});
+
 await vectorStore.addDocuments(allSplits);
 console.log("Vector store created successfully");
 
@@ -35,7 +50,7 @@ const retriever_tool = tool(async ({ query }: { query: string }) =>
     {
         const retrievedDocs = await vectorStore.similaritySearch(query, 2);
         const docsContent = retrievedDocs
-            .map((doc) => doc.pageContent).join("\n\n");
+            .map((doc) => doc.pageContent).join("/n/n");
 
         return `Context from Confluence page:\n\n${docsContent}`;
     },
@@ -66,16 +81,21 @@ const agent = createAgent({
         Do not include any other text, only the JSON object.`
 });
 
-
 const response = await agent.invoke({
     messages: [{ role: "user", content: "Generate user story and acceptance criteria for the given feature" }]
 });
 
+let agentResponse;
+
 try {
     const lastMessageIndex = response.messages.length - 1;
     console.log(`Total messages on response is ${lastMessageIndex}`);
-    const agentResponse = response.messages[lastMessageIndex].content;
-    console.log(agentResponse);
+    agentResponse = response.messages[lastMessageIndex].content;
 } catch (error) {
     console.log("Raw response:", response);
+    throw new Error("Failed to extract agent response");
+
+}
+
+    return agentResponse;
 }
