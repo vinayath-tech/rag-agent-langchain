@@ -5,9 +5,16 @@ import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
 import { MongoClient } from "mongodb";
 import { Document } from "@langchain/core/documents";
-import "dotenv/config";
+import * as dotenv from "dotenv";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import { createAgent, tool } from "langchain";
 import { z } from "zod";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 export async function initializeUserStoryAgent(query: string) {
 
