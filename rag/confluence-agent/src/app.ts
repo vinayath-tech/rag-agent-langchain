@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { initializeUserStoryAgent } from './../userStoryAgent';
+import { initializeUserStoryAgent } from './../userStoryAgent.js';
 
 const app = express();
 app.use(cors());

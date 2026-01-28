@@ -1,6 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { tool } from "langchain";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import "dotenv/config";
 
@@ -13,20 +14,18 @@ export async function generateTestCasesFromStory(vectorStore: any) {
     });
 
     //Create a tool to retrieve context from the vector store
-    const retrieveStoryTool = tool(
-        async ({ query }) => {
+    const retrieveStoryTool = new DynamicStructuredTool({
+        name: "retrieve_jira_story",
+        description: "Retrieve JIRA story details & acceptance criteria to generate test cases",
+        schema: z.object({
+            query: z.string().describe("JIRA ticket number")
+        }),
+        func: async ({ query }) => {
             const retriever = vectorStore.asRetriever();
             const docs = await retriever.invoke(query);
             return docs.map((d: any) => d.pageContent).join("\n\n");
-        },
-        {
-            name:"retrieve_jira_story",
-            description: "Retrieve JIRA story details & acceptance criteria to generate test cases",
-            schema: z.object({
-                query: z.string().describe("JIRA ticket number")
-            })
         }
-    );
+    });
 
 
     const agent = createReactAgent({
@@ -36,9 +35,7 @@ export async function generateTestCasesFromStory(vectorStore: any) {
 
     const result = await agent.invoke({
         messages: [ 
-            {
-                role: "system",
-                content: `You are a Senior SDET with strong domain expertise.
+            new SystemMessage(`You are a Senior SDET with strong domain expertise.
                 
                 Your task is to generate comprehensive test cases. Follow these steps:
                 1. Use the retrieve_jira_story tool to get the story details
@@ -55,12 +52,9 @@ export async function generateTestCasesFromStory(vectorStore: any) {
                 - Do NOT invent business rules
                 - Clearly separate sections
                 - Ask clarification questions if needed
-                - Base everything on the retrieved context`
-            },
-            {
-                role: "user",
-                content: `Generate detailed test cases for the JIRA story with ticket number: {issueKey}`
-            }
+                - Base everything on the retrieved context
+                - Provide the final output in markdown format with proper headings and bullet points.`),
+            new HumanMessage(`Generate detailed test cases for the JIRA story with ticket number: {issueKey}`)
         ]
     });
 

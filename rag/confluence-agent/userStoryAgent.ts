@@ -1,5 +1,5 @@
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";  
-import { fetchConfluencePage } from "./confluenceFetchTool";
+import { fetchConfluencePage } from "./confluenceFetchTool.js";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
@@ -19,7 +19,9 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 export async function initializeUserStoryAgent(query: string) {
 
     const client  = new MongoClient(process.env.MONGODB_ATLAS_URI || "");
-    const collection = client.db(process.env.MONGODB_ATLAS_DB_NAME || "").collection(process.env.MONGODB_ATLAS_COLLECTION_NAME || "");
+    const collection = client
+        .db(process.env.MONGODB_ATLAS_DB_NAME || "")
+        .collection(process.env.MONGODB_ATLAS_COLLECTION_NAME || "");
 
     const docText = await fetchConfluencePage(query);
 
@@ -41,10 +43,8 @@ export async function initializeUserStoryAgent(query: string) {
         model: "text-embedding-3-large",
     });
 
-
-
     const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
-        collection: collection,
+        collection: collection as any,
         indexName: "confluence_vector_index",
         textKey: "pageContent",
     });

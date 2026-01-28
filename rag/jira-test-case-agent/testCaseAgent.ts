@@ -1,7 +1,7 @@
-import { getJiraStory } from "./jiraClient";
-import { normalizeStory } from "./storyNormalizer";
-import { ingestStory } from "./ingestStory";
-import { generateTestCasesFromStory } from "./storyToTestAgent"; 
+import { getJiraStory } from "./jiraClient.js";
+import { normalizeStory } from "./storyNormalizer.js";
+import { ingestStory } from "./ingestStory.js";
+import { generateTestCasesFromStory } from "./storyToTestAgent.js"; 
 
 export async function runJiraTestCaseAgent(issueKey: string) {
   const story = await getJiraStory(issueKey);
