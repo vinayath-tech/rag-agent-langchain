@@ -68,7 +68,7 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 
 3. Open your browser and navigate to:
    ```
-   http://localhost:8080
+   http://localhost:3000
    ```
 
 4. Interact with the agent by typing questions in the chat interface.
@@ -87,7 +87,7 @@ This project demonstrates the use of LangChain, a powerful framework for buildin
 
 3. Open your browser and navigate to:
    ```
-   http://localhost:8080
+   http://localhost:3000
    ```
 
 4. Interact with the JIRA agent to:
@@ -155,10 +155,10 @@ The frontend automatically connects to the backend server running on port 3000.
 
 ## Available Scripts
 
-- `npm run start:rag` - Start the RAG agent backend server
-- `npm run start:jira` - Start the JIRA agent backend server
-- `npm run start:confluence` - Start the Confluence agent backend server
-- `npm run start:ui` - Start the frontend UI server (serves public folder on port 8080)
+- `npm run start-nike-agent` - Start the RAG agent backend server
+- `npm run start-jira-agent` - Start the JIRA agent backend server
+- `npm run start-confluence-agent` - Start the Confluence agent backend server
+- `npm run start:ui` - Start the frontend UI server (serves public folder on port 3000)
 
 ## Configuration
 
