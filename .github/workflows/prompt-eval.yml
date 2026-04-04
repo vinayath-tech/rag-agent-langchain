@@ -19,9 +19,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+    
+      - name: Install dependencies
+        run: npm install
 
-      - name: Install Promptfoo
-        run: npm install -g promptfoo
+      - name: Start Jira-test-agent server
+        run: npm run start-jira-agent
+        env: 
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3001 --timeout 30000
+
+    #   - name: Install Promptfoo
+    #     run: npm install -g promptfoo
 
       - name: Run evaluation
         run: promptfoo eval -c rag/jira-test-case-agent/tests/promptfooconfig.yaml
