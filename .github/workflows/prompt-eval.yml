@@ -21,7 +21,7 @@ jobs:
           node-version: 22
     
       - name: Install dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Start Jira-test-agent server
         run: npm run start-jira-agent
