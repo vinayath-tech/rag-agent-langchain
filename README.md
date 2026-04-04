@@ -122,6 +122,57 @@ You can run individual practice agents to test their functionality. For example:
 npx tsx practice_agents/agent1.ts
 ```
 
+## Prompt Evaluation with Promptfoo
+
+This framework uses [Promptfoo](https://promptfoo.dev/) for evaluating the quality and correctness of agent outputs.
+
+### How it is configured
+
+The evaluation is set up for the **JIRA Test Case Agent**. Promptfoo sends test requests directly to the agent's Express server (`http://localhost:3001`) and asserts on the response. The configuration is located at:
+
+```
+rag/jira-test-case-agent/tests/promptfooconfig.yaml
+```
+
+Each test passes a JIRA issue key (e.g. `KAN-1`) and asserts that the output:
+- Contains Happy path, Negative, and Boundary value test cases
+- Contains BDD Gherkin scenarios
+- Does not invent business rules beyond the story context
+
+### Running evaluations locally
+
+1. Start the JIRA Test Case Agent server in one terminal:
+   ```bash
+   npm run start-jira-agent
+   ```
+
+2. In a separate terminal, run the evaluation:
+   ```bash
+   npx promptfoo eval -c rag/jira-test-case-agent/tests/promptfooconfig.yaml
+   ```
+
+   Or use the combined script (cross-platform, requires `concurrently`):
+   ```bash
+   npm run eval-tests
+   ```
+
+3. View the results in the terminal or run `npx promptfoo view` to open the visual report in your browser.
+
+### GitHub Actions CI
+
+The evaluation runs automatically on every pull request that modifies files under the `prompts/` directory. The workflow:
+
+1. Installs dependencies and starts the JIRA Test Case Agent server in the background
+2. Waits for the server to be ready on port 3001
+3. Runs `promptfoo eval` via the `promptfoo/promptfoo-action`
+4. Posts the evaluation results as a comment on the pull request
+
+The workflow is defined at `.github/workflows/prompt-eval.yml`. The following secrets must be configured in GitHub repository settings:
+- `OPENAI_API_KEY`
+- `JIRA_BASE_URL`
+- `JIRA_EMAIL`
+- `JIRA_API_TOKEN`
+
 ## Key Components
 
 ### Nike RAG Agent

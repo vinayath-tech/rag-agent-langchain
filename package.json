@@ -7,7 +7,9 @@
     "start-jira-agent": "tsx ./rag/jira-test-case-agent/src/app.ts",
     "start-nike-agent": "tsx ./rag/nike-question-agent/src/app.ts",
     "start-confluence-agent": "tsx ./rag/confluence-agent/src/app.ts",
-    "start-ui": "serve ./rag/shared-ui/public"
+    "start-ui": "serve ./rag/shared-ui/public",
+    "eval-tests": "concurrently --kill-others-on-fail \"npm run start-jira-agent\" \"npx wait-on tcp:localhost:3001 && promptfoo eval -c rag/jira-test-case-agent/tests/promptfooconfig.yaml\""
+
   },
   "keywords": [],
   "author": "",
@@ -29,17 +31,21 @@
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
     "langchain": "^1.1.5",
+    "langsmith": "^0.4.12",
     "mammoth": "^1.11.0",
     "mongodb": "^7.0.0",
     "pdf-parse": "^1.1.1",
+    "promptfoo": "^0.121.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "wait-on": "^9.0.4",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "concurrently": "^9.2.1",
     "serve": "^14.2.5"
   }
 }
