@@ -7,7 +7,9 @@
     "start-jira-agent": "tsx ./rag/jira-test-case-agent/src/app.ts",
     "start-nike-agent": "tsx ./rag/nike-question-agent/src/app.ts",
     "start-confluence-agent": "tsx ./rag/confluence-agent/src/app.ts",
-    "start-ui": "serve ./rag/shared-ui/public"
+    "start-ui": "serve ./rag/shared-ui/public",
+    "eval-tests": "concurrently --kill-others-on-fail \"npm run start-jira-agent\" \"npx wait-on tcp:localhost:3001 && promptfoo eval -c rag/jira-test-case-agent/tests/promptfooconfig.yaml\""
+
   },
   "keywords": [],
   "author": "",
@@ -43,6 +45,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "concurrently": "^9.2.1",
     "serve": "^14.2.5"
   }
 }
