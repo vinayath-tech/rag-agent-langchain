@@ -1,0 +1,41 @@
+description: Test agent evaluator
+
+# prompts:
+#   - ../prompts/test-prompt.yaml
+
+# providers:
+#   - openai:gpt-5.2
+providers:  
+   - id: https 
+     config: 
+      url: http://localhost:3001/jira-test-case-agent
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        query: "{{issueKey}}"
+      responseParser: json.result
+
+defaultTest:
+  assert:
+    - type: latency
+      threshold: 30000
+    # - type: answer-relevance
+    - type: llm-rubric
+      value: |
+        "Output contains clear separate sections for Happy path, Negative and Boundary value test cases.
+        Each test cases should contain title, Description, Pre-condition & Steps"
+
+
+tests:
+  - vars:
+      issueKey: "KAN-1"
+    assert:
+     - type: icontains-all
+       value: 
+        - 'Happy path test cases'
+        - 'Negative Test Cases'
+        - 'Boundary Value Test Cases'
+        - 'BDD Gherkin Scenarios'
+    #  - type: context-faithfulness
+    #    threshold: 0.8
