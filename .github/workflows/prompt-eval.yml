@@ -1,8 +1,9 @@
 name: 'Prompt Evaluation'
 on:
+  push:
+    branches: [ master ]
   pull_request:
-    paths:
-      - '../../rag/jira-test-case-agent/**'
+    branches: [ master ]
 
 jobs:
   evaluate-prompt:
