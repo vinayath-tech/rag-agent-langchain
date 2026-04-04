@@ -24,7 +24,7 @@ jobs:
         run: npm install --force
 
       - name: Start Jira-test-agent server
-        run: npm run start-jira-agent
+        run: npm run start-jira-agent &
         env: 
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
