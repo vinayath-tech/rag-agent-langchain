@@ -32,7 +32,7 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Wait for server to be ready
-        run: npx wait-on http://localhost:3001 --timeout 30000
+        run: npx wait-on tcp:localhost:3001 --timeout 30000
 
     #   - name: Install Promptfoo
     #     run: npm install -g promptfoo
