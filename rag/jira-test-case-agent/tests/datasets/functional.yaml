@@ -1,0 +1,20 @@
+ - vars:
+      issueKey: "KAN-1"
+   assert:
+     - type: icontains-all
+       value: 
+        - 'Happy path test cases'
+        - 'Negative Test Cases'
+        - 'Boundary Value Test Cases'
+        - 'BDD Gherkin Scenarios'
+     - type: answer-relevance
+     - type: llm-rubric
+       value: |
+         Output contains clear separate sections for Happy path, Negative and Boundary value test cases.
+         Each test cases should contain title, Description, Pre-condition & Steps
+    # Evals commented out
+    #  - type: javascript
+    #    value: "output.includes(context.vars.issueKey)"
+    #  - type: context-faithfulness
+    #  - type: factuality
+    #    value: Test cases are derived from acceptance criteria only, not assumed business logic
