@@ -9,7 +9,6 @@
     "start-confluence-agent": "tsx ./rag/confluence-agent/src/app.ts",
     "start-ui": "serve ./rag/shared-ui/public",
     "eval-tests": "concurrently --kill-others-on-fail \"npm run start-jira-agent\" \"npx wait-on tcp:localhost:3001 && promptfoo eval -c rag/jira-test-case-agent/tests/promptfooconfig.yaml\""
-
   },
   "keywords": [],
   "author": "",
@@ -30,6 +29,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
+    "js-yaml": "^4.1.1",
     "langchain": "^1.1.5",
     "langsmith": "^0.4.12",
     "mammoth": "^1.11.0",
@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/js-yaml": "^4.0.9",
     "concurrently": "^9.2.1",
     "serve": "^14.2.5"
   }

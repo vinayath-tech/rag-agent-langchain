@@ -50,7 +50,7 @@ export async function getJiraStory(issueKey: string) {
         // console.log("Jira Issue type:", fields.issuetype.name);
         // console.log("Jira Issue status:", fields.status?.name);
         return {
-            key: 'DEV-1',
+            key: issueKey,
             summary: fields.summary,
             description: descriptionText || "",
             acceptanceCriteria: acceptanceCriteriaText || "",

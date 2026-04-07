@@ -4,8 +4,17 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import "dotenv/config";
+import { readFileSync } from "fs";
+import { load } from "js-yaml";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
-export async function generateTestCasesFromStory(vectorStore: any) {
+export async function generateTestCasesFromStory(vectorStore: any, issueKey: string) {
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const promptFile = load(
+        readFileSync(resolve(__dirname, "./prompts/test-prompt.yaml"), "utf-8")
+    ) as Array<{ role: string, content: string}>
 
   
     const llm = new ChatOpenAI({
@@ -33,28 +42,13 @@ export async function generateTestCasesFromStory(vectorStore: any) {
         tools: [retrieveStoryTool],
     });
 
+    const systemPrompt = promptFile.find(p => p.role === "system")!.content;
+    const humanPrompt = promptFile.find(p => p.role === "user")!.content;
+
     const result = await agent.invoke({
         messages: [ 
-            new SystemMessage(`You are a Senior SDET with strong domain expertise.
-                
-                Your task is to generate comprehensive test cases. Follow these steps:
-                1. Use the retrieve_jira_story tool to get the story details
-                2. Analyze the acceptance criteria carefully
-                3. Generate test cases in the following categories:
-                   - Happy path test cases
-                   - Negative test cases
-                   - Boundary value test cases
-                4. Format each test case with: title, description, precondition, steps, expected results
-                5. Generate BDD Gherkin scenarios
-                6. Identify missing or ambiguous acceptance criteria
-                
-                Rules:
-                - Do NOT invent business rules
-                - Clearly separate sections
-                - Ask clarification questions if needed
-                - Base everything on the retrieved context
-                - Provide the final output in markdown format with proper headings and bullet points.`),
-            new HumanMessage(`Generate detailed test cases for the JIRA story with ticket number: {issueKey}`)
+            new SystemMessage(systemPrompt),
+            new HumanMessage(humanPrompt.replace("{issueKey}", issueKey))
         ]
     });
 
