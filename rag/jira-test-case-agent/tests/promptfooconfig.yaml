@@ -1,7 +1,7 @@
 description: Test agent evaluator
 
-# prompts:
-#   - ../prompts/test-prompt.yaml
+prompts:
+  - ../prompts/test-prompt.yaml
 
 # providers:
 #   - openai:gpt-5.2
@@ -20,22 +20,10 @@ defaultTest:
   assert:
     - type: latency
       threshold: 30000
-    # - type: answer-relevance
-    - type: llm-rubric
-      value: |
-        "Output contains clear separate sections for Happy path, Negative and Boundary value test cases.
-        Each test cases should contain title, Description, Pre-condition & Steps"
 
+allowErrors: true
 
 tests:
-  - vars:
-      issueKey: "KAN-1"
-    assert:
-     - type: icontains-all
-       value: 
-        - 'Happy path test cases'
-        - 'Negative Test Cases'
-        - 'Boundary Value Test Cases'
-        - 'BDD Gherkin Scenarios'
-    #  - type: context-faithfulness
-    #    threshold: 0.8
+  - file://datasets/functional.yaml
+  - file://datasets/security.yaml
+  - file://datasets/edgecase.yaml

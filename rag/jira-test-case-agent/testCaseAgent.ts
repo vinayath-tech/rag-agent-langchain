@@ -10,7 +10,7 @@ export async function runJiraTestCaseAgent(issueKey: string) {
 
   const vectorStore = await ingestStory(normalized);
 
-  const result = await generateTestCasesFromStory(vectorStore);
+  const result = await generateTestCasesFromStory(vectorStore, issueKey);
 
   return result;
 }
